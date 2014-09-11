@@ -6,9 +6,9 @@ Clone klish from https://src.libcode.org/klish
 Original info
 =============
 
-Homepage : http://klish.libcode.org.
-Additional documentation : http://klish.googlecode.com
-Repository : https://src.libcode.org/klish
+* Homepage : http://klish.libcode.org.
+* Additional documentation : http://klish.googlecode.com
+* Repository : https://src.libcode.org/klish
 
 Current changes
 ===============

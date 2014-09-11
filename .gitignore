@@ -44,3 +44,9 @@
 /cov-int
 /klish-*.tar*
 /*.tgz
+
+# QT files
+klish.config
+klish.creator
+klish.files
+klish.includes

@@ -494,9 +494,9 @@ static int clish_shell_execline(clish_shell_t *this, const char *line, char **ou
 
 	/* Push the specified line or interactive line */
 	if (line)
-		str = tinyrl_forceline(this->tinyrl, &context, line);
+        str = tinyrl_forceline(this->tinyrl, &context, line, this->depth);
 	else
-		str = tinyrl_readline(this->tinyrl, &context);
+        str = tinyrl_readline(this->tinyrl, &context, this->depth);
 	lerror = errno;
 	if (!str) {
 		switch (lerror) {

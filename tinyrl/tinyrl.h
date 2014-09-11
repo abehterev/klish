@@ -112,9 +112,9 @@ extern void tinyrl__set_keypress_fn(tinyrl_t *instance,
 	tinyrl_keypress_fn_t *fn);
 extern void tinyrl__set_hotkey_fn(tinyrl_t *instance,
 	tinyrl_key_func_t *fn);
-extern char *tinyrl_readline(tinyrl_t *instance, void *context);
+extern char *tinyrl_readline(tinyrl_t *instance, void *context, int depth);
 extern char *tinyrl_forceline(tinyrl_t *instance, 
-	void *context, const char *line);
+    void *context, const char *line, int depth);
 extern bool_t tinyrl_bind_key(tinyrl_t *instance, int key,
 	tinyrl_key_func_t *fn);
 extern void tinyrl_delete_matches(char **instance);

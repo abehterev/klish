@@ -819,10 +819,11 @@ tinyrl_t *tinyrl_new(FILE * istream, FILE * ostream,
 }
 
 /*----------------------------------------------------------------------- */
-static char *internal_insertline(tinyrl_t * this, char *buffer)
+static char *internal_insertline(tinyrl_t * this, char *buffer, int depth)
 {
 	char *p;
 	char *s = buffer;
+    int spcnt = 0;
 
 	/* strip any spurious '\r' or '\n' */
 	if ((p = strchr(buffer, '\r')))
@@ -831,9 +832,18 @@ static char *internal_insertline(tinyrl_t * this, char *buffer)
 		*p = '\0';
 	/* skip any whitespace at the beginning of the line */
 	if (0 == this->point) {
-		while (*s && isspace(*s))
-			s++;
+        while (*s && isspace(*s)) {
+            s++;
+            spcnt++;
+        }
 	}
+
+    while ((spcnt - depth) > 0) {
+        //nested_up();
+        spcnt--;
+    }
+
+
 	if (*s) {
 		/* append this string to the input buffer */
 		(void)tinyrl_insert_text(this, s);
@@ -846,7 +856,7 @@ static char *internal_insertline(tinyrl_t * this, char *buffer)
 
 /*----------------------------------------------------------------------- */
 static char *internal_readline(tinyrl_t * this,
-	void *context, const char *str)
+    void *context, const char *str, int depth)
 {
 	FILE *istream = tinyrl_vt100__get_istream(this->term);
 	char *result = NULL;
@@ -966,11 +976,11 @@ static char *internal_readline(tinyrl_t * this,
 
 		if (str) {
 			tmp = lub_string_dup(str);
-			internal_insertline(this, tmp);
+            internal_insertline(this, tmp, depth);
 		} else {
 			while (istream && (sizeof(buffer) == len) &&
 				(s = fgets(buffer, sizeof(buffer), istream))) {
-				s = internal_insertline(this, buffer);
+                s = internal_insertline(this, buffer, depth);
 				len = strlen(buffer) + 1; /* account for the '\0' */
 			}
 			if (!s || ((this->line[0] == '\0') && feof(istream))) {
@@ -1010,15 +1020,15 @@ static char *internal_readline(tinyrl_t * this,
 }
 
 /*----------------------------------------------------------------------- */
-char *tinyrl_readline(tinyrl_t * this, void *context)
+char *tinyrl_readline(tinyrl_t * this, void *context, int depth)
 {
-	return internal_readline(this, context, NULL);
+    return internal_readline(this, context, NULL, depth);
 }
 
 /*----------------------------------------------------------------------- */
-char *tinyrl_forceline(tinyrl_t * this, void *context, const char *line)
+char *tinyrl_forceline(tinyrl_t * this, void *context, const char *line, int depth)
 {
-	return internal_readline(this, context, line);
+    return internal_readline(this, context, line, depth);
 }
 
 /*----------------------------------------------------------------------- */

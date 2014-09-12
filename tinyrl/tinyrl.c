@@ -19,6 +19,7 @@
 #include "lub/string.h"
 
 #include "private.h"
+#include "clish/shell.h"
 
 /*-------------------------------------------------------- */
 static int utf8_wchar(const char *sp, unsigned long *sym_out)
@@ -819,11 +820,15 @@ tinyrl_t *tinyrl_new(FILE * istream, FILE * ostream,
 }
 
 /*----------------------------------------------------------------------- */
-static char *internal_insertline(tinyrl_t * this, char *buffer, int depth)
+static char *internal_insertline(tinyrl_t *this, char *buffer, int depth2)
 {
 	char *p;
 	char *s = buffer;
     int spcnt = 0;
+    int depth = 0;
+
+    clish_shell_t *shell = clish_context__get_shell(this->context);
+    depth = clish_shell__get_depth(shell);
 
 	/* strip any spurious '\r' or '\n' */
 	if ((p = strchr(buffer, '\r')))
@@ -838,11 +843,9 @@ static char *internal_insertline(tinyrl_t * this, char *buffer, int depth)
         }
 	}
 
-    while ((spcnt - depth) > 0) {
-        //nested_up();
-        spcnt--;
+    if ((depth - spcnt) > 0) {
+        clish_shell__set_depth(shell, spcnt);
     }
-
 
 	if (*s) {
 		/* append this string to the input buffer */
